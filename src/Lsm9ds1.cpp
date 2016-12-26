@@ -19,9 +19,9 @@ ParamFsXl::ParamFsXl() :
 ParamFsXl::~ParamFsXl()
 {}
 
-FsXl ParamFsXl::operator()()
+int ParamFsXl::operator()()
 {
-  return _value;
+  return static_cast<int>(_value);
 }
 uint8_t ParamFsXl::regMask()
 {
@@ -29,7 +29,22 @@ uint8_t ParamFsXl::regMask()
 }
 uint8_t ParamFsXl::regValue()
 {
-  return static_cast<int>(_value);
+  uint8_t regValue = 0;
+  switch (_value) {
+  case FsXl::Fs2g:
+    regValue = static_cast<uint8_t>(FsXlMask::Fs2g);
+    break;
+  case FsXl::Fs4g:
+    regValue = static_cast<uint8_t>(FsXlMask::Fs4g);
+    break;
+  case FsXl::Fs8g:
+    regValue = static_cast<uint8_t>(FsXlMask::Fs8g);
+    break;
+  case FsXl::Fs16g:
+    regValue = static_cast<uint8_t>(FsXlMask::Fs16g);
+    break;
+  }
+  return regValue;
 }
 RegType ParamFsXl::regType()
 {
@@ -64,8 +79,8 @@ uint16_t Lsm9ds1::read(uint8_t reg)
 
 float Lsm9ds1::registerTo(int16_t regValue)
 {
-  return _config.fs_xl.value() *
-    statc_cast<float>(regValue) / std::numeric_limits<float>max();
+  return _config.fsXl() *
+    static_cast<float>(regValue) / std::numeric_limits<float>::max();
 }
 
 std::vector<float> Lsm9ds1::l()
@@ -138,3 +153,10 @@ Lsm9ds1Config::Lsm9ds1Config() :
 
 Lsm9ds1Config::~Lsm9ds1Config()
 {}
+
+std::unordered_map<RegType, uint8_t> Lsm9ds1Config::registers()
+{
+  std::unordered_map<RegType, uint8_t> registers;
+
+  return registers;
+}

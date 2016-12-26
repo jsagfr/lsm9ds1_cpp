@@ -6,10 +6,10 @@
 #include <string>
 #include <cstdint>
 #include <vector>
-/* enum Direction: int {A = 1, B = -1}; */
+#include <unordered_map>
 
-enum RegType {
-  CTRL_REG6_XL
+enum class RegType: uint8_t {
+  CTRL_REG6_XL = 0x20
 };
 
 enum ParamType {
@@ -50,7 +50,7 @@ public:
   ParamFsXl();
   ~ParamFsXl();
 
-  FsXl operator()();
+  int operator()();
   uint8_t regMask();
   uint8_t regValue();
   RegType regType();
@@ -76,6 +76,8 @@ public:
   // ParamOdrXl odrXl;
   // ParamOutputDataRate outputDataRate;
   // ParamMd md;
+
+  std::unordered_map<RegType, uint8_t> registers();
 
 };
 
