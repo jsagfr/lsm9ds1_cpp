@@ -32,8 +32,24 @@ enum class FsXlMask : uint8_t {
 enum class OdrG: uint8_t {
   A = 0
 };
-enum class OdrXl: uint8_t {
-  A = 0
+enum class OdrXl : int {
+  PowerDown = 0,
+  F10Hz = 10,
+  F50Hz = 50,
+  F119Hz = 119,
+  F238Hz = 238,
+  F476Hz = 476,
+  F952Hz = 952
+};
+enum class OdrXlMask : uint8_t {
+  PowerDown = 0,
+  F10Hz  = 0b00100000,
+  F50Hz  = 0b01000000,
+  F119Hz = 0b10100000,
+  F238Hz = 0b10000000,
+  F476Hz = 0b10100000,
+  F952Hz = 0b11000000,
+  Mask   = 0b11100000
 };
 // enum OutputDataRate: uint8_t {
 //   C = 0
@@ -43,26 +59,46 @@ enum class OdrXl: uint8_t {
 // };
 
 
-class ParamFsXl
+class Parameter
 {
 public:
-  ParamFsXl(FsXl value);
-  ParamFsXl();
-  ~ParamFsXl();
+  Parameter(uint8_t _regValue,
+	    uint8_t _regMask,
+	    RegType _regType,
+	    ParamType _paramType);
+  virtual ~Parameter() = default;
 
-  int operator()();
   uint8_t regMask();
   uint8_t regValue();
   RegType regType();
   ParamType paramType();
   
-private:
-  FsXl _value;
+protected:
+  uint8_t _regValue;
   uint8_t _regMask;
   RegType _regType;
   ParamType _paramType;
 };
 
+class ParamFsXl: public Parameter
+{
+public:
+  ParamFsXl(FsXl value);
+  ParamFsXl();
+  ~ParamFsXl() = default;
+
+  int operator()();
+  // uint8_t regMask();
+  // uint8_t regValue();
+  // RegType regType();
+  // ParamType paramType();
+  
+private:
+  FsXl _value;
+  // uint8_t _regMask;
+  // RegType _regType;
+  // ParamType _paramType;
+};
 
 
 class Lsm9ds1Config
@@ -77,7 +113,7 @@ public:
   // ParamOutputDataRate outputDataRate;
   // ParamMd md;
 
-  std::unordered_map<RegType, uint8_t> registers();
+  std::unordered_map<uint8_t, uint8_t> registers();
 
 };
 
@@ -108,6 +144,7 @@ public:
   void config(Lsm9ds1Config config);
 
 private:
+  uint8_t read8(uint8_t reg);
   uint16_t read(uint8_t reg);
   float registerTo(int16_t regValue);
 
