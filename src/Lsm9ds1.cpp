@@ -3,6 +3,8 @@
 
 const uint8_t lsm9ds1I2cAddr = 0x6b;
 const uint8_t OUT_X_XL = 0x28;
+const uint8_t OUT_Y_XL = 0x2A;
+const uint8_t OUT_Z_XL = 0x2C;
 const uint8_t WHO_AM_I = 0x0f;
 
 Parameter::Parameter(uint8_t regValue,
@@ -39,7 +41,7 @@ ParamFsXl::ParamFsXl(FsXl value) :
   Parameter(0,
 	    static_cast<uint8_t>(FsXlMask::Mask),
 	    RegType::CTRL_REG6_XL,
-	    ParamType::TypeFsXl),
+	    ParamType::FsXl),
   _value(value)
 {
   switch (_value) {
@@ -62,45 +64,51 @@ ParamFsXl::ParamFsXl() :
   ParamFsXl(FsXl::Fs2g)
 {}
 
-// ParamFsXl::~ParamFsXl()
-// {}
-
 int ParamFsXl::operator()()
 {
   return static_cast<int>(_value);
 }
-// uint8_t ParamFsXl::regMask()
-// {
-//   return _regMask;
-// }
-// uint8_t ParamFsXl::regValue()
-// {
-//   uint8_t regValue = 0;
-//   switch (_value) {
-//   case FsXl::Fs2g:
-//     regValue = static_cast<uint8_t>(FsXlMask::Fs2g);
-//     break;
-//   case FsXl::Fs4g:
-//     regValue = static_cast<uint8_t>(FsXlMask::Fs4g);
-//     break;
-//   case FsXl::Fs8g:
-//     regValue = static_cast<uint8_t>(FsXlMask::Fs8g);
-//     break;
-//   case FsXl::Fs16g:
-//     regValue = static_cast<uint8_t>(FsXlMask::Fs16g);
-//     break;
-//   }
-//   return regValue;
-// }
-// RegType ParamFsXl::regType()
-// {
-//   return _regType;
-// }
-// ParamType ParamFsXl::paramType()
-// {
-//   return _paramType;
-// }
 
+ParamOdrXl::ParamOdrXl(OdrXl value) :
+  Parameter(0,
+	    static_cast<uint8_t>(OdrXlMask::Mask),
+	    RegType::CTRL_REG6_XL,
+	    ParamType::OdrXl),
+  _value(value)
+{
+  switch (_value) {
+  case OdrXl::PowerDown:
+    _regValue = static_cast<uint8_t>(OdrXlMask::PowerDown);
+    break;
+  case OdrXl::F10Hz:
+    _regValue = static_cast<uint8_t>(OdrXlMask::F10Hz);
+    break;
+  case OdrXl::F50Hz:
+    _regValue = static_cast<uint8_t>(OdrXlMask::F50Hz);
+    break;
+  case OdrXl::F119Hz:
+    _regValue = static_cast<uint8_t>(OdrXlMask::F119Hz);
+    break;
+  case OdrXl::F238Hz:
+    _regValue = static_cast<uint8_t>(OdrXlMask::F238Hz);
+    break;
+  case OdrXl::F476Hz:
+    _regValue = static_cast<uint8_t>(OdrXlMask::F476Hz);
+    break;
+  case OdrXl::F952Hz:
+    _regValue = static_cast<uint8_t>(OdrXlMask::F952Hz);
+    break;
+  }
+}
+
+ParamOdrXl::ParamOdrXl() :
+  ParamOdrXl(OdrXl::PowerDown)
+{}
+
+int ParamOdrXl::operator()()
+{
+  return static_cast<int>(_value);
+}
 
 
 Lsm9ds1::Lsm9ds1(const std::string& i2cPath, Lsm9ds1Config config) :
@@ -138,10 +146,10 @@ uint8_t Lsm9ds1::read8(uint8_t reg)
   return data;
 }
 
-float Lsm9ds1::registerTo(int16_t regValue)
+float Lsm9ds1::registerToXl(int16_t regValue)
 {
-  return _config.fsXl() *
-    static_cast<float>(regValue) / std::numeric_limits<float>::max();
+  return static_cast<float>(_config.fsXl()) *
+    static_cast<float>(regValue) / std::numeric_limits<int16_t>::max();
 }
 
 std::vector<float> Lsm9ds1::l()
@@ -152,19 +160,17 @@ std::vector<float> Lsm9ds1::l()
 
 float Lsm9ds1::lx()
 {
-  int16_t v = read(OUT_X_XL);
-  // config.fsXl
-  return static_cast<float>(v);
+  return registerToXl(read(OUT_X_XL));
 }
 
 float Lsm9ds1::ly()
 {
-  return 0.0;
+  return registerToXl(read(OUT_Y_XL));
 }
 
 float Lsm9ds1::lz()
 {
-  return 0.0;
+  return registerToXl(read(OUT_Z_XL));
 }
 
 
@@ -220,6 +226,7 @@ std::unordered_map<uint8_t, uint8_t> Lsm9ds1Config::registers()
   std::unordered_map<uint8_t, uint8_t> registers;
 
   registers[static_cast<uint8_t>(fsXl.regType())] |= fsXl.regValue();
+  registers[static_cast<uint8_t>(odrXl.regType())] |= odrXl.regValue();
 
   return registers;
 }

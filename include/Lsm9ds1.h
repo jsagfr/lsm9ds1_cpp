@@ -12,8 +12,9 @@ enum class RegType: uint8_t {
   CTRL_REG6_XL = 0x20
 };
 
-enum ParamType {
-  TypeFsXl
+enum class ParamType {
+  FsXl,
+  OdrXl
 };
 
 enum class FsXl : int {
@@ -88,16 +89,22 @@ public:
   ~ParamFsXl() = default;
 
   int operator()();
-  // uint8_t regMask();
-  // uint8_t regValue();
-  // RegType regType();
-  // ParamType paramType();
   
 private:
   FsXl _value;
-  // uint8_t _regMask;
-  // RegType _regType;
-  // ParamType _paramType;
+};
+
+class ParamOdrXl: public Parameter
+{
+public:
+  ParamOdrXl(OdrXl value);
+  ParamOdrXl();
+  ~ParamOdrXl() = default;
+
+  int operator()();
+  
+private:
+  OdrXl _value;
 };
 
 
@@ -109,7 +116,7 @@ public:
 
   ParamFsXl fsXl;
   // ParamOdrG odrG;
-  // ParamOdrXl odrXl;
+  ParamOdrXl odrXl;
   // ParamOutputDataRate outputDataRate;
   // ParamMd md;
 
@@ -146,7 +153,7 @@ public:
 private:
   uint8_t read8(uint8_t reg);
   uint16_t read(uint8_t reg);
-  float registerTo(int16_t regValue);
+  float registerToXl(int16_t regValue);
 
 };
 
