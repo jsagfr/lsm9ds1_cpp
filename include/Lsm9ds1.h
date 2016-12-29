@@ -38,6 +38,7 @@ private:
   uint8_t read8(uint8_t reg);
   uint16_t read(uint8_t reg);
   float registerToXl(int16_t regValue);
+  void applyConfig();
 
 };
 

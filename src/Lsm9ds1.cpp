@@ -17,11 +17,6 @@ Lsm9ds1::Lsm9ds1(const std::string& i2cPath, Lsm9ds1Config config) :
 {
   uint8_t r = read8(WHO_AM_I);
   std::cout << "Who am I? " << std::hex << static_cast<int>(r) << std::endl;
-
-
-  for(auto reg: _config.registers()) {
-    _i2cDevice.write({reg.first, reg.second});
-  }
 }
 
 Lsm9ds1::Lsm9ds1(const std::string& i2cPath) :
@@ -30,6 +25,8 @@ Lsm9ds1::Lsm9ds1(const std::string& i2cPath) :
 
 Lsm9ds1::~Lsm9ds1()
 {
+  _config = Lsm9ds1Config{};
+  applyConfig();
 }
 
 uint16_t Lsm9ds1::read(uint8_t reg)
@@ -50,6 +47,19 @@ float Lsm9ds1::registerToXl(int16_t regValue)
 {
   return static_cast<float>(_config.fsXl()) *
     static_cast<float>(regValue) / std::numeric_limits<int16_t>::max();
+}
+
+void Lsm9ds1::applyConfig()
+{
+  for(auto reg: _config.registers()) {
+    _i2cDevice.write({reg.first, reg.second});
+  }
+}
+
+void Lsm9ds1::config(Lsm9ds1Config config)
+{
+  _config = config;
+  applyConfig();
 }
 
 std::vector<float> Lsm9ds1::l()
@@ -103,11 +113,5 @@ float Lsm9ds1::my()
 float Lsm9ds1::mz()
 {
   return 0.0;
-}
-
-
-void Lsm9ds1::config(Lsm9ds1Config config)
-{
-  _config = config;
 }
 
