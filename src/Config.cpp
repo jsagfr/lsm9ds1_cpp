@@ -2,12 +2,12 @@
 #include "Param.h"
 
 
-Lsm9ds1Config::Lsm9ds1Config() :
+Config::Config() :
   fsXl(ParamFsXl{}),
   odrXl(ParamOdrXl{})
 {}
 
-std::unordered_map<uint8_t, uint8_t> Lsm9ds1Config::registers()
+std::unordered_map<uint8_t, uint8_t> Config::registers()
 {
   std::unordered_map<uint8_t, uint8_t> registers;
 

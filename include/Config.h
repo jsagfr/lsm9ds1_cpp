@@ -5,11 +5,11 @@
 #include <unordered_map>
 #include "Param.h"
 
-class Lsm9ds1Config
+class Config
 {
 public:
-  Lsm9ds1Config();
-  ~Lsm9ds1Config() = default;
+  Config();
+  ~Config() = default;
 
   ParamFsXl fsXl;
   // ParamOdrG odrG;
