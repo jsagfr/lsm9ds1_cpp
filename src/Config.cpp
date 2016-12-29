@@ -7,9 +7,6 @@ Lsm9ds1Config::Lsm9ds1Config() :
   odrXl(ParamOdrXl{})
 {}
 
-Lsm9ds1Config::~Lsm9ds1Config()
-{}
-
 std::unordered_map<uint8_t, uint8_t> Lsm9ds1Config::registers()
 {
   std::unordered_map<uint8_t, uint8_t> registers;

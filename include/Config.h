@@ -9,7 +9,7 @@ class Lsm9ds1Config
 {
 public:
   Lsm9ds1Config();
-  ~Lsm9ds1Config();
+  ~Lsm9ds1Config() = default;
 
   ParamFsXl fsXl;
   // ParamOdrG odrG;
