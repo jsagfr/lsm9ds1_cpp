@@ -12,10 +12,10 @@ class Lsm9ds1
 {
 protected:
   I2cDevice _i2cDevice;
-  Lsm9ds1Config _config;
+  Config _config;
 
 public:
-  Lsm9ds1(const std::string& i2cPath, Lsm9ds1Config config);
+  Lsm9ds1(const std::string& i2cPath, Config config);
   Lsm9ds1(const std::string& i2cPath);
   ~Lsm9ds1();
 
@@ -32,14 +32,11 @@ public:
   float my();
   float mz();
 
-  void config(Lsm9ds1Config config);
+  void config(Config config);
 
 private:
-  uint8_t read8(uint8_t reg);
-  uint16_t read(uint8_t reg);
   float registerToXl(int16_t regValue);
   void applyConfig();
-
 };
 
 #endif	// LSM9DS1_H
