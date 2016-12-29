@@ -3,7 +3,7 @@ project (lsm9ds1)
 
 add_compile_options(-Wall)
 add_compile_options(-Wextra)
-add_library(lsm9ds1 src/Lsm9ds1.cpp)
+add_library(lsm9ds1 src/Lsm9ds1.cpp src/Config.cpp src/Param.cpp)
 set_property(TARGET lsm9ds1 PROPERTY CXX_STANDARD 11)
 set_property(TARGET lsm9ds1 PROPERTY CXX_STANDARD_REQUIRED ON)
 
