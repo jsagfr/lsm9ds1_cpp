@@ -8,7 +8,7 @@
 class Config
 {
 public:
-  Config();
+  Config() = default;
   ~Config() = default;
 
   ParamFsXl fsXl;

@@ -1,11 +1,10 @@
 #include "Config.h"
 #include "Param.h"
 
-
-Config::Config() :
-  fsXl(ParamFsXl{}),
-  odrXl(ParamOdrXl{})
-{}
+// Config::Config():
+//   fsXl{ParamFsXl{}},
+//   odrXl{ParamOdrXl{}}
+// {}
 
 std::unordered_map<uint8_t, uint8_t> Config::registers()
 {
