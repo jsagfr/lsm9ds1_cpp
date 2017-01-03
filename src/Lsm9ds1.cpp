@@ -17,6 +17,8 @@ Lsm9ds1::Lsm9ds1(const std::string& i2cPath, Config config) :
 {
   uint8_t r = _i2cDevice.read<uint8_t>(WHO_AM_I);
   std::cout << "Who am I? " << std::hex << static_cast<int>(r) << std::endl;
+  _config = config;
+  applyConfig();
 }
 
 Lsm9ds1::Lsm9ds1(const std::string& i2cPath) :
@@ -31,7 +33,7 @@ Lsm9ds1::~Lsm9ds1()
 
 float Lsm9ds1::registerToXl(int16_t regValue)
 {
-  return static_cast<float>(_config.fsXl()) *
+  return 9.81 * static_cast<float>(_config.fsXl()) *
     static_cast<float>(regValue) / std::numeric_limits<int16_t>::max();
 }
 
